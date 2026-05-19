@@ -339,126 +339,78 @@
 </div>
 
 <!-- SLIDE 5a: How Poke Thinks — Knowledge -->
-<div class="slide">
+<div class="slide" style="padding:40px 80px">
   <h2>How Poke Thinks <span class="dim" style="font-size:24px">— Knowledge</span></h2>
-  <p class="subtitle" style="margin-bottom:32px">Before reviewing a single line of code, Poke learns our system</p>
+  <p style="color:var(--text-dim);font-size:20px;margin-bottom:20px">Before reviewing a single line of code, Poke learns our system</p>
 
-  <div class="grid grid-2" style="gap:32px">
-    <div class="card" style="border-color:var(--accent)">
-      <h3 class="highlight">Auto-Discovery</h3>
-      <div class="spacer-sm"></div>
-      <p>Before every review, Poke scans our actual code — no manual config needed:</p>
-      <div class="spacer"></div>
-      <table>
-        <tr>
-          <th>What it learns</th>
-          <th>Where it looks</th>
-          <th>What it finds</th>
-        </tr>
-        <tr>
-          <td class="bold">Kafka topics</td>
-          <td class="dim">app/config.py</td>
-          <td>9 topic names</td>
-        </tr>
-        <tr>
-          <td class="bold">Partitioned tables</td>
-          <td class="dim">app/models/*.py</td>
-          <td>11 tables + partition counts</td>
-        </tr>
-        <tr>
-          <td class="bold">API endpoints</td>
-          <td class="dim">swagger/openapi.json</td>
-          <td>41 endpoints + operationIds</td>
-        </tr>
-        <tr>
-          <td class="bold">Auth decorators</td>
-          <td class="dim">api/*.py</td>
-          <td>7 @access, 1 @rbac, 6 unprotected</td>
-        </tr>
-        <tr>
-          <td class="bold">Feature flags</td>
-          <td class="dim">app/config.py</td>
-          <td>8 flags</td>
-        </tr>
+  <div class="grid grid-2" style="gap:24px">
+    <div class="card" style="border-color:var(--accent);padding:20px">
+      <h3 class="highlight" style="margin-bottom:12px">Auto-Discovery</h3>
+      <p style="font-size:18px;margin-bottom:12px">Scans our actual code before every review — no manual config:</p>
+      <table style="font-size:16px">
+        <tr><th style="padding:6px 12px">What it learns</th><th style="padding:6px 12px">Where</th><th style="padding:6px 12px">Result</th></tr>
+        <tr><td style="padding:6px 12px" class="bold">Kafka topics</td><td style="padding:6px 12px" class="dim">config.py</td><td style="padding:6px 12px">9 topics</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">Partitioned tables</td><td style="padding:6px 12px" class="dim">app/models/</td><td style="padding:6px 12px">11 tables</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">API endpoints</td><td style="padding:6px 12px" class="dim">openapi.json</td><td style="padding:6px 12px">41 endpoints</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">Auth decorators</td><td style="padding:6px 12px" class="dim">api/*.py</td><td style="padding:6px 12px">7 @access, 1 @rbac</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">Feature flags</td><td style="padding:6px 12px" class="dim">config.py</td><td style="padding:6px 12px">8 flags</td></tr>
       </table>
-      <div class="spacer"></div>
-      <p class="dim">This runs every time. Nobody maintains a list — it stays current automatically.</p>
+      <p class="dim" style="font-size:15px;margin-top:10px">Nobody maintains this list — it stays current automatically.</p>
     </div>
 
-    <div class="card" style="border-color:var(--purple)">
-      <h3 class="purple">ChromaDB Codebase Index</h3>
-      <div class="spacer-sm"></div>
-      <p>Poke splits our entire codebase into <span class="bold">1032 code chunks</span> — one per function or class — and indexes them by meaning using embeddings.</p>
-      <div class="spacer"></div>
-      <p>When reviewing a file, it searches this index for the <span class="bold">5 most related chunks from other files.</span></p>
-      <div class="spacer"></div>
-      <h3 style="font-size:20px">Why this matters</h3>
-      <div class="spacer-sm"></div>
-      <p>If a parameter is removed from <code>host.py</code>, Poke pulls up the function in <code>serialization.py</code> where that logic moved to. The LLM sees both sides — <span class="green bold">so it doesn't flag a refactor as a bug.</span></p>
-      <div class="spacer"></div>
-      <p>This is why an 18-file refactoring PR gets <span class="green bold">0 false positives</span> instead of 36.</p>
-      <div class="spacer"></div>
-      <p class="dim">Persists locally. Rebuilds only when files change.</p>
+    <div class="card" style="border-color:var(--purple);padding:20px">
+      <h3 class="purple" style="margin-bottom:12px">ChromaDB Codebase Index</h3>
+      <p style="font-size:18px">Splits our codebase into <span class="bold">1032 code chunks</span> (one per function/class) and indexes them by meaning.</p>
+      <p style="font-size:18px;margin-top:12px">When reviewing a file, pulls up the <span class="bold">5 most related chunks</span> from other files.</p>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px">
+        <p style="font-size:17px"><span class="highlight bold">Why this matters:</span> If a parameter is removed from <code>host.py</code>, Poke finds the function in <code>serialization.py</code> where that logic moved to.</p>
+        <p style="font-size:17px;margin-top:8px">The LLM sees both sides — <span class="green bold">so it doesn't flag a refactor as a bug.</span></p>
+      </div>
+      <p style="font-size:17px;margin-top:12px">This is why an 18-file refactoring PR gets <span class="green bold">0 false positives</span> instead of 36.</p>
     </div>
   </div>
 </div>
 
 <!-- SLIDE 5b: How Poke Thinks — AI + Quality -->
-<div class="slide">
+<div class="slide" style="padding:40px 80px">
   <h2>How Poke Thinks <span class="dim" style="font-size:24px">— AI + Quality</span></h2>
-  <p class="subtitle" style="margin-bottom:32px">Two models working together, plus smart deduplication</p>
+  <p style="color:var(--text-dim);font-size:20px;margin-bottom:20px">Two models working together, plus smart deduplication</p>
 
-  <div class="grid grid-2" style="gap:32px">
-    <div class="card" style="border-color:var(--green)">
-      <h3 class="green">Two-Model Strategy</h3>
-      <div class="spacer-sm"></div>
+  <div class="grid grid-2" style="gap:24px">
+    <div class="card" style="border-color:var(--green);padding:20px">
+      <h3 class="green" style="margin-bottom:10px">Two-Model Strategy</h3>
 
-      <h3 style="font-size:20px">GPT-4o <span class="tag tag-blue">Review</span></h3>
-      <p>Generates findings. For each file, it sees:</p>
-      <div class="spacer-sm"></div>
-      <ul>
-        <li>The <span class="bold">diff</span> — what changed</li>
-        <li>The <span class="bold">complete file</span> at HEAD — not just the diff</li>
+      <p style="font-size:17px"><span class="bold">GPT-4o</span> <span class="tag tag-blue" style="font-size:12px">Review</span> — generates findings. Each file gets:</p>
+      <ul style="font-size:16px;margin:8px 0">
+        <li>The <span class="bold">diff</span> + <span class="bold">complete file</span> at HEAD</li>
         <li><span class="bold">Related code</span> from other files via ChromaDB</li>
-        <li>The <span class="bold">PR description</span> — author's intent</li>
-        <li>Which <span class="bold">other files</span> changed in this PR</li>
+        <li><span class="bold">PR description</span> + list of all files changed</li>
         <li>Our <span class="bold">team rules</span> + auto-discovered facts</li>
       </ul>
-      <p class="dim" style="margin-top:12px">Each finding gets a confidence score: 1-10. Below 6 = auto-dropped.</p>
+      <p class="dim" style="font-size:15px">Confidence scoring: 1-10 per finding. Below 6 = auto-dropped.</p>
 
-      <div class="spacer"></div>
+      <div style="height:16px"></div>
 
-      <h3 style="font-size:20px">o3-mini <span class="tag tag-green">Critique</span></h3>
-      <p>A reasoning model that validates every finding from GPT-4o.</p>
-      <div class="spacer-sm"></div>
-      <p>It asks: <em>"Is this a real issue, or did the code just move to another function? Did behavior actually change, or is this just refactoring?"</em></p>
-      <div class="spacer-sm"></div>
-      <p>Only findings that pass this check survive. <span class="green bold">This is where most false positives die.</span></p>
-      <div class="spacer-sm"></div>
-      <p class="dim">Both models are free on GitHub Models — zero cost.</p>
+      <p style="font-size:17px"><span class="bold">o3-mini</span> <span class="tag tag-green" style="font-size:12px">Critique</span> — validates every finding:</p>
+      <p style="font-size:16px;margin-top:6px;font-style:italic;color:var(--text-dim)">"Is this real, or did code just move? Did behavior change, or is this refactoring?"</p>
+      <p style="font-size:16px;margin-top:8px">Only findings that pass survive. <span class="green bold">This is where false positives die.</span></p>
+      <p class="dim" style="font-size:15px;margin-top:8px">Both models free on GitHub Models — zero cost.</p>
     </div>
 
-    <div class="card" style="border-color:var(--yellow)">
-      <h3 class="yellow">Smart Deduplication</h3>
-      <div class="spacer-sm"></div>
-      <p style="margin-bottom:20px">If 14 files all have the same org_id concern, you don't want 14 comments saying the same thing.</p>
+    <div class="card" style="border-color:var(--yellow);padding:20px">
+      <h3 class="yellow" style="margin-bottom:10px">Smart Deduplication</h3>
+      <p style="font-size:17px;margin-bottom:16px">14 files with the same concern? You get 1 comment, not 14.</p>
 
-      <h3 style="font-size:20px">Step 1: Concept Grouping</h3>
-      <p>Recognizes domain patterns in findings. If multiple findings mention "org_id" + "cross-tenant", they're about the same thing.</p>
-      <p style="margin-top:8px"><span class="bold">14 findings → 1 finding</span> that says <em>"org_id concern — also affects these 13 files"</em></p>
+      <p style="font-size:16px"><span class="bold">1. Concept grouping</span></p>
+      <p style="font-size:15px;color:var(--text-dim);margin:4px 0 12px">Finds domain patterns: "org_id" + "cross-tenant" → same concept. <span class="bold" style="color:var(--text)">14 findings → 1</span> listing all affected files.</p>
 
-      <div class="spacer"></div>
+      <p style="font-size:16px"><span class="bold">2. Keyword similarity</span></p>
+      <p style="font-size:15px;color:var(--text-dim);margin:4px 0 12px">Findings sharing >40% of meaningful words get merged.</p>
 
-      <h3 style="font-size:20px">Step 2: Keyword Similarity</h3>
-      <p>For findings that don't match a known pattern, compares the actual words. If two findings share more than <span class="bold">40%</span> of their meaningful words, they get merged.</p>
+      <p style="font-size:16px"><span class="bold">3. Per-lens cap</span></p>
+      <p style="font-size:15px;color:var(--text-dim);margin:4px 0 12px">Max <span class="bold" style="color:var(--text)">5 per lens</span>, highest severity first.</p>
 
-      <div class="spacer"></div>
-
-      <h3 style="font-size:20px">Step 3: Per-Lens Cap</h3>
-      <p>Maximum <span class="bold">5 findings per lens</span>, highest severity first. No single lens can flood the review.</p>
-
-      <div class="spacer"></div>
-      <p class="dim">Result: focused, actionable reviews — not walls of noise.</p>
+      <p class="dim" style="font-size:15px;margin-top:8px">Result: focused reviews — not walls of noise.</p>
     </div>
   </div>
 </div>
