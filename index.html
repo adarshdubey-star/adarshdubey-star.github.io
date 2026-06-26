@@ -225,7 +225,7 @@
 <div class="slide active">
   <div class="hero-logo">Poke</div>
   <h1>AI PR Review Agent</h1>
-  <p class="subtitle">Domain-aware code review for HBI — powered by GPT-4o + o3-mini</p>
+  <p class="subtitle">Domain-aware code review for HBI — powered by Claude Sonnet 4.6 + Gemini 2.5 Pro</p>
   <div class="spacer"></div>
   <div style="display:flex;gap:12px"></div>
   <div class="spacer"></div>
@@ -270,16 +270,16 @@
   </p>
   <div class="grid grid-4">
     <div class="stat-card">
-      <div class="value highlight">25</div>
-      <div class="label">Source files</div>
+      <div class="value highlight">1,170</div>
+      <div class="label">AST symbols</div>
     </div>
     <div class="stat-card">
-      <div class="value green">5</div>
+      <div class="value purple">5,660</div>
+      <div class="label">Call edges</div>
+    </div>
+    <div class="stat-card">
+      <div class="value green">6</div>
       <div class="label">Review lenses</div>
-    </div>
-    <div class="stat-card">
-      <div class="value purple">1032</div>
-      <div class="label">Indexed code chunks</div>
     </div>
     <div class="stat-card">
       <div class="value yellow">0</div>
@@ -297,15 +297,15 @@
   <div class="pipeline">
     <div class="pipeline-step" style="border-color:var(--accent)">./poke</div>
     <div class="pipeline-arrow">→</div>
-    <div class="pipeline-step">Index Codebase</div>
+    <div class="pipeline-step">AST Code Graph</div>
     <div class="pipeline-arrow">→</div>
     <div class="pipeline-step">Auto-Discover</div>
     <div class="pipeline-arrow">→</div>
     <div class="pipeline-step">Parse Diff + Full Files</div>
     <div class="pipeline-arrow">→</div>
-    <div class="pipeline-step" style="border-color:var(--green)">5 Lenses</div>
+    <div class="pipeline-step" style="border-color:var(--green)">6 Lenses + Shared Context</div>
     <div class="pipeline-arrow">→</div>
-    <div class="pipeline-step" style="border-color:var(--purple)">Self-Critique</div>
+    <div class="pipeline-step" style="border-color:var(--purple)">Critique + Cardinality</div>
     <div class="pipeline-arrow">→</div>
     <div class="pipeline-step" style="border-color:var(--yellow)">Dedup</div>
     <div class="pipeline-arrow">→</div>
@@ -315,17 +315,17 @@
   <div class="grid grid-3">
     <div class="card">
       <h3 class="highlight">Three Knowledge Sources</h3>
-      <p><span class="bold">ChromaDB</span> — 1032 code chunks indexed by embeddings. Shows the LLM where removed code moved to.</p>
+      <p><span class="bold">AST Code Graph</span> — 1,170 symbols, 5,660 call edges in SQLite. Queries blast radius of changed functions.</p>
       <div class="spacer-sm"></div>
-      <p><span class="bold">Auto-Discovery</span> — scans live codebase for 9 Kafka topics, 11 partitioned tables, 41 API endpoints.</p>
+      <p><span class="bold">Auto-Discovery</span> — scans live codebase for 10 Kafka topics, 11 partitioned tables, 41 API endpoints with response cardinality.</p>
       <div class="spacer-sm"></div>
       <p><span class="bold">rules.yaml</span> — 65 lines of team wisdom verified against actual code.</p>
     </div>
     <div class="card">
       <h3 class="green">Two-Model Strategy</h3>
-      <p><span class="bold">GPT-4o</span> generates findings with full context — diff + full file + related code chunks + PR description.</p>
+      <p><span class="bold">Claude Sonnet 4.6</span> generates findings with full context — diff + full file + blast radius + shared codebase context.</p>
       <div class="spacer-sm"></div>
-      <p><span class="bold">o3-mini</span> (reasoning model) validates every finding. Filters false positives by checking: did behavior change, or just move?</p>
+      <p><span class="bold">Gemini 2.5 Pro</span> validates every finding with codebase context including API endpoint cardinality (single vs list).</p>
     </div>
     <div class="card">
       <h3 class="purple">Confidence Scoring</h3>
@@ -349,9 +349,10 @@
       <p style="font-size:18px;margin-bottom:12px">Scans our actual code before every review — no manual config:</p>
       <table style="font-size:16px">
         <tr><th style="padding:6px 12px">What it learns</th><th style="padding:6px 12px">Where</th><th style="padding:6px 12px">Result</th></tr>
-        <tr><td style="padding:6px 12px" class="bold">Kafka topics</td><td style="padding:6px 12px" class="dim">config.py</td><td style="padding:6px 12px">9 topics</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">Kafka topics</td><td style="padding:6px 12px" class="dim">config.py</td><td style="padding:6px 12px">10 topics</td></tr>
         <tr><td style="padding:6px 12px" class="bold">Partitioned tables</td><td style="padding:6px 12px" class="dim">app/models/</td><td style="padding:6px 12px">11 tables</td></tr>
         <tr><td style="padding:6px 12px" class="bold">API endpoints</td><td style="padding:6px 12px" class="dim">openapi.json</td><td style="padding:6px 12px">41 endpoints</td></tr>
+        <tr><td style="padding:6px 12px" class="bold">Response cardinality</td><td style="padding:6px 12px" class="dim">openapi.json</td><td style="padding:6px 12px">single / list per endpoint</td></tr>
         <tr><td style="padding:6px 12px" class="bold">Auth decorators</td><td style="padding:6px 12px" class="dim">api/*.py</td><td style="padding:6px 12px">7 @access, 1 @rbac</td></tr>
         <tr><td style="padding:6px 12px" class="bold">Feature flags</td><td style="padding:6px 12px" class="dim">config.py</td><td style="padding:6px 12px">8 flags</td></tr>
       </table>
@@ -359,14 +360,14 @@
     </div>
 
     <div class="card" style="border-color:var(--purple);padding:20px">
-      <h3 class="purple" style="margin-bottom:12px">ChromaDB Codebase Index</h3>
-      <p style="font-size:18px">Splits our codebase into <span class="bold">1032 code chunks</span> (one per function/class) and indexes them by meaning.</p>
-      <p style="font-size:18px;margin-top:12px">When reviewing a file, pulls up the <span class="bold">5 most related chunks</span> from other files.</p>
+      <h3 class="purple" style="margin-bottom:12px">AST Code Graph</h3>
+      <p style="font-size:18px">Parses codebase with Python <code>ast</code>, stores <span class="bold">1,170 symbols</span> and <span class="bold">5,660 call edges</span> in SQLite.</p>
+      <p style="font-size:18px;margin-top:12px">Queries <span class="bold">blast radius</span> — all callers and callees of changed functions.</p>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:16px">
-        <p style="font-size:17px"><span class="highlight bold">Why this matters:</span> If a parameter is removed from <code>host.py</code>, Poke finds the function in <code>serialization.py</code> where that logic moved to.</p>
-        <p style="font-size:17px;margin-top:8px">The LLM sees both sides — <span class="green bold">so it doesn't flag a refactor as a bug.</span></p>
+        <p style="font-size:17px"><span class="highlight bold">Why this matters:</span> When a function changes in <code>host_query_db.py</code>, Poke traces every caller and callee to understand the full impact.</p>
+        <p style="font-size:17px;margin-top:8px">Structural call chains, not fuzzy embeddings — <span class="green bold">precise blast radius analysis.</span></p>
       </div>
-      <p style="font-size:17px;margin-top:12px">This is why an 18-file refactoring PR gets <span class="green bold">0 false positives</span> instead of 36.</p>
+      <p style="font-size:17px;margin-top:12px">Zero external dependencies — <span class="green bold">Python stdlib ast + sqlite3 only.</span></p>
     </div>
   </div>
 </div>
@@ -380,21 +381,21 @@
     <div class="card" style="border-color:var(--green);padding:20px">
       <h3 class="green" style="margin-bottom:10px">Two-Model Strategy</h3>
 
-      <p style="font-size:17px"><span class="bold">GPT-4o</span> <span class="tag tag-blue" style="font-size:12px">Review</span> — generates findings. Each file gets:</p>
+      <p style="font-size:17px"><span class="bold">Claude Sonnet 4.6</span> <span class="tag tag-blue" style="font-size:12px">Review</span> — generates findings. Each file gets:</p>
       <ul style="font-size:16px;margin:8px 0">
         <li>The <span class="bold">diff</span> + <span class="bold">complete file</span> at HEAD</li>
-        <li><span class="bold">Related code</span> from other files via ChromaDB</li>
-        <li><span class="bold">PR description</span> + list of all files changed</li>
-        <li>Our <span class="bold">team rules</span> + auto-discovered facts</li>
+        <li><span class="bold">Blast radius</span> from AST code graph</li>
+        <li>Shared codebase context (API endpoints, Kafka topics, tables, flags, auth)</li>
+        <li>Our <span class="bold">team rules</span> + <span class="bold">PR description</span></li>
       </ul>
       <p class="dim" style="font-size:15px">Confidence scoring: 1-10 per finding. Below 6 = auto-dropped.</p>
 
       <div style="height:16px"></div>
 
-      <p style="font-size:17px"><span class="bold">o3-mini</span> <span class="tag tag-green" style="font-size:12px">Critique</span> — validates every finding:</p>
-      <p style="font-size:16px;margin-top:6px;font-style:italic;color:var(--text-dim)">"Is this real, or did code just move? Did behavior change, or is this refactoring?"</p>
+      <p style="font-size:17px"><span class="bold">Gemini 2.5 Pro</span> <span class="tag tag-green" style="font-size:12px">Critique</span> — validates every finding:</p>
+      <p style="font-size:16px;margin-top:6px;font-style:italic;color:var(--text-dim)">"Is this real, or did code just move? Does endpoint cardinality contradict the assumption?"</p>
       <p style="font-size:16px;margin-top:8px">Only findings that pass survive. <span class="green bold">This is where false positives die.</span></p>
-      <p class="dim" style="font-size:15px;margin-top:8px">Both models free on GitHub Models — zero cost.</p>
+      <p class="dim" style="font-size:15px;margin-top:8px">Both models free via Red Hat models.corp / GitHub Models — zero cost.</p>
     </div>
 
     <div class="card" style="border-color:var(--yellow);padding:20px">
@@ -415,9 +416,9 @@
   </div>
 </div>
 
-<!-- SLIDE 6: The Five Lenses -->
+<!-- SLIDE 6: The Six Lenses -->
 <div class="slide">
-  <h2>Five Specialized Lenses</h2>
+  <h2>Six Specialized Lenses</h2>
   <div class="spacer-sm"></div>
   <table>
     <tr>
@@ -456,9 +457,13 @@
       <td>SQLite usage, fixture shadowing</td>
       <td>Coverage gaps, wrong fixture type</td>
     </tr>
+    <tr>
+      <td><span class="tag tag-red">Security</span></td>
+      <td>All changed files</td>
+      <td>Hardcoded secrets, SQL injection patterns</td>
+      <td>Credential leaks, injection vectors</td>
+    </tr>
   </table>
-  <div class="spacer-sm"></div>
-  <p class="dim">+ Security lens (deterministic only) — regex for hardcoded secrets and SQL injection on every file.</p>
 </div>
 
 <!-- SLIDE 6: What makes Poke different -->
@@ -484,7 +489,7 @@
     <tr>
       <td class="bold">Understands refactoring?</td>
       <td class="red">Flags parameter moves as bugs</td>
-      <td class="green">Sees full file + related code via ChromaDB</td>
+      <td class="green">Sees full file + blast radius via AST code graph</td>
     </tr>
     <tr>
       <td class="bold">Distinguishes unit vs API tests?</td>
@@ -494,12 +499,12 @@
     <tr>
       <td class="bold">False positive filtering?</td>
       <td class="red">None</td>
-      <td class="green">Self-critique pass with reasoning model</td>
+      <td class="green">Two-model critique with codebase context</td>
     </tr>
     <tr>
       <td class="bold">Cost?</td>
       <td class="yellow">$19-49/month subscription</td>
-      <td class="green">Free (GitHub Models)</td>
+      <td class="green">Free (Red Hat models.corp or GitHub Models)</td>
     </tr>
   </table>
 </div>
@@ -522,11 +527,15 @@
     <div class="bar" style="width:40px;background:var(--yellow)">1</div>
   </div>
   <div class="comparison-row">
-    <div class="comparison-label">V4: + full context<br><span class="dim" style="font-size:14px">ChromaDB + full files</span></div>
+    <div class="comparison-label">V4: + full context<br><span class="dim" style="font-size:14px">AST code graph + full files</span></div>
     <div class="bar" style="width:20px;background:var(--green)">0</div>
   </div>
   <div class="comparison-row">
-    <div class="comparison-label">Final: + o3-mini<br><span class="dim" style="font-size:14px">self-critique</span></div>
+    <div class="comparison-label">V4.5: + shared context<br><span class="dim" style="font-size:14px">+ cardinality</span></div>
+    <div class="bar" style="width:60px;background:var(--green)">14 raw → 3 kept</div>
+  </div>
+  <div class="comparison-row">
+    <div class="comparison-label">Final: + Gemini 2.5 Pro<br><span class="dim" style="font-size:14px">two-model critique</span></div>
     <div class="bar" style="width:20px;background:var(--green)">0 ✓</div>
   </div>
   <div class="spacer"></div>
@@ -535,7 +544,7 @@
 
 <!-- SLIDE 8: Benchmark Results -->
 <div class="slide">
-  <h2>Benchmark: 8 Real PRs</h2>
+  <h2>Benchmark: 10 Real PRs</h2>
   <div class="spacer-sm"></div>
   <table>
     <tr>
@@ -610,12 +619,28 @@
       <td class="green">0</td>
       <td class="green">Backward compat ✓</td>
     </tr>
+    <tr>
+      <td>#4493</td>
+      <td>Feature flag + config</td>
+      <td>5</td>
+      <td>3</td>
+      <td class="green">0</td>
+      <td class="green">Valid findings ✓</td>
+    </tr>
+    <tr>
+      <td>#4501</td>
+      <td>API + staleness logic</td>
+      <td>7</td>
+      <td>3</td>
+      <td class="green">0</td>
+      <td class="green">Cardinality-aware ✓</td>
+    </tr>
   </table>
   <div class="spacer"></div>
   <div class="grid grid-3">
-    <div class="stat-card"><div class="value">33</div><div class="label">Total findings</div></div>
+    <div class="stat-card"><div class="value">39</div><div class="label">Total findings</div></div>
     <div class="stat-card"><div class="value red">2</div><div class="label">False positives</div></div>
-    <div class="stat-card"><div class="value green">94%</div><div class="label">Accuracy</div></div>
+    <div class="stat-card"><div class="value green">95%</div><div class="label">Accuracy</div></div>
   </div>
 </div>
 
@@ -637,9 +662,9 @@
       <div class="spacer"></div>
       <h3>Zero Setup</h3>
       <ul>
-        <li>No API keys — uses free GitHub Models</li>
+        <li>No API keys — uses Red Hat models.corp or GitHub Models</li>
         <li>No config files — works out of the box</li>
-        <li>No subscriptions — gpt-4o + o3-mini are free</li>
+        <li>No subscriptions — Claude + Gemini are free</li>
       </ul>
     </div>
     <div>
@@ -656,11 +681,11 @@
   Enter PR number: <span style="color:var(--green)">4061</span>
 
 <span style="color:var(--accent)">╭── Poke — Reviewing PR #4061 ──╮</span>
-<span style="color:var(--accent)">│</span> Model: gpt-4o | Critique: o3-mini <span style="color:var(--accent)">│</span>
+<span style="color:var(--accent)">│</span> Model: claude-sonnet-4-6 | Critique: gemini-2.5-pro <span style="color:var(--accent)">│</span>
 <span style="color:var(--accent)">╰──────────────────────────────╯</span>
 
-  <span style="color:var(--green)">✓</span> Codebase indexed    1032 chunks
-  <span style="color:var(--green)">✓</span> Codebase scanned    9 topics
+  <span style="color:var(--green)">✓</span> Code graph built    1170 symbols
+  <span style="color:var(--green)">✓</span> Codebase scanned    10 topics
   <span style="color:var(--green)">✓</span> Diff parsed         8 files
   <span style="color:var(--green)">✓</span> Files routed        Api, Test
   <span style="color:var(--green)">✓</span> Lenses complete     <span style="color:var(--accent)">━━━━━━━━━━</span> 16/16
@@ -690,14 +715,15 @@
           <tr><td><code>main.py</code></td><td class="dim">Pipeline orchestrator</td></tr>
           <tr><td><code>diff_parser.py</code></td><td class="dim">Diff + full file fetch</td></tr>
           <tr><td><code>change_router.py</code></td><td class="dim">File → lens routing</td></tr>
-          <tr><td><code>llm_engine.py</code></td><td class="dim">GPT-4o + o3-mini calls</td></tr>
+          <tr><td><code>llm_engine.py</code></td><td class="dim">Claude + Gemini (parallel, rate-limited)</td></tr>
+          <tr><td><code>llm_vertex.py</code></td><td class="dim">Claude via Vertex AI proxy</td></tr>
           <tr><td><code>deduplicator.py</code></td><td class="dim">Concept + Jaccard dedup</td></tr>
         </table>
       </div>
       <div class="card">
         <h3 class="purple">Knowledge</h3>
         <table style="font-size:16px">
-          <tr><td style="width:180px"><code>codebase_index.py</code></td><td class="dim">ChromaDB indexing</td></tr>
+          <tr><td style="width:180px"><code>code_graph.py</code></td><td class="dim">AST code graph (SQLite)</td></tr>
           <tr><td><code>auto_discover.py</code></td><td class="dim">Runtime codebase scan</td></tr>
           <tr><td><code>rules.yaml</code></td><td class="dim">Team wisdom (65 lines)</td></tr>
           <tr><td><code>prompts.py</code></td><td class="dim">LLM templates</td></tr>
@@ -773,19 +799,19 @@
     <div class="card">
       <h3>LLMs</h3>
       <ul>
-        <li><span class="bold">GPT-4o</span> — review generation</li>
-        <li><span class="bold">o3-mini</span> — self-critique (reasoning)</li>
-        <li>Via GitHub Models — <span class="green">free</span></li>
+        <li><span class="bold">Claude Sonnet 4.6</span> — review generation</li>
+        <li><span class="bold">Gemini 2.5 Pro</span> — critique (reasoning)</li>
+        <li>Via Red Hat models.corp / GitHub Models — <span class="green">free</span></li>
         <li>Confidence scoring (1-10)</li>
       </ul>
     </div>
     <div class="card">
-      <h3>Vector DB</h3>
+      <h3>Code Graph</h3>
       <ul>
-        <li><span class="bold">ChromaDB</span> — codebase indexing</li>
-        <li>all-MiniLM-L6-v2 embeddings</li>
-        <li>1032 chunks, auto-rebuilds</li>
-        <li>Persists locally in .poke_index/</li>
+        <li><span class="bold">AST parser</span> + <span class="bold">SQLite</span></li>
+        <li>1,170 symbols, 5,660 call edges</li>
+        <li>Blast radius queries</li>
+        <li>Zero external deps (stdlib only)</li>
       </ul>
     </div>
     <div class="card">
@@ -805,7 +831,7 @@
       <ul>
         <li><span class="bold">Auto-discovery</span> — runtime scan</li>
         <li><span class="bold">rules.yaml</span> — team conventions</li>
-        <li>9 Kafka topics, 11 tables, 41 endpoints discovered automatically</li>
+        <li>10 Kafka topics, 11 tables, 41 endpoints + response cardinality</li>
       </ul>
     </div>
     <div class="card">
@@ -835,9 +861,16 @@
     <div>
       <h3 class="highlight">Short Term</h3>
       <ul>
+        <li>OpenShift deployment for always-on review</li>
+        <li>GitHub Actions auto-review on every PR</li>
         <li>Add more lenses (Performance, Dependencies)</li>
-        <li>GitHub Actions workflow for auto-review on every PR</li>
-        <li>Support for other repos beyond HBI</li>
+      </ul>
+      <div class="spacer-sm"></div>
+      <h3 class="green">Done ✓</h3>
+      <ul>
+        <li><span class="dim">Support for other repos</span> — already repo-agnostic</li>
+        <li><span class="dim">AST code graph</span> — replaced ChromaDB</li>
+        <li><span class="dim">Response cardinality</span> — reduces false positives</li>
       </ul>
     </div>
     <div>
@@ -864,7 +897,7 @@
   <p class="subtitle">AI-powered PR reviews that actually understand your codebase</p>
   <div class="spacer"></div>
   <div style="display:flex;gap:16px;justify-content:center">
-    <div class="stat-card" style="min-width:140px"><div class="value green">94%</div><div class="label">Accuracy</div></div>
+    <div class="stat-card" style="min-width:140px"><div class="value green">95%</div><div class="label">Accuracy</div></div>
     <div class="stat-card" style="min-width:140px"><div class="value highlight">30s</div><div class="label">Per review</div></div>
     <div class="stat-card" style="min-width:140px"><div class="value yellow">$0</div><div class="label">Cost</div></div>
     <div class="stat-card" style="min-width:140px"><div class="value purple">1</div><div class="label">Command</div></div>
